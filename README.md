@@ -69,3 +69,14 @@ See [curls.md](curls.md) for example curl commands for all endpoints.
 
 - All data is stored in memory; restart will reset users/events/bookings.
 - Use Basic Auth for all protected endpoints.
+
+## Background Job Queue and Notifications
+
+- **Queue Implementation:** The system uses a buffered channel (`taskQueue`) with a capacity of 100 tasks to handle asynchronous jobs, preventing blocking on high load.
+- **Worker Goroutine:** A dedicated goroutine runs the [`StartWorker`](queue/worker.go) function, processing tasks in a loop without blocking the main server thread.
+- **Supported Tasks:**
+  - **Booking Confirmation:** Simulates email sending by logging a confirmation message to the console when a booking is created.
+  - **Event Update Notification:** Simulates notifications by logging updates to all affected users when an event is modified or deleted.
+- **Task Addition:** Tasks are added via [`AddTask`](queue/worker.go), ensuring non-blocking enqueueing.
+- **Concurrency:** The queue is thread-safe using Go's channel semantics; no additional locks are needed.
+- **Limitations:** Notifications are console-based simulations; in production, integrate with email services (e.g., SMTP) or push notification systems.
