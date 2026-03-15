@@ -1,0 +1,3 @@
+module BOOKING-BACKEND
+
+go 1.25.6
